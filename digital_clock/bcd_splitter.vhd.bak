@@ -1,0 +1,36 @@
+bcd_splitter
+
+------------------
+-- Company: AGSTU AB
+-- Engineer:  
+-- 
+-- Create Date 
+-- 2021-05-08
+--
+-- Design Name: CPU_VHDK_project_DE10
+--
+-- Target Devices: 10M50DAF484C7G
+-- Tool versions: Quartus 18.1 and ModelSim
+-- 
+-- Testbench file: vhdl_uppgift_8
+-- Do file: vhdl_uppgift_8_run_msim_rtl_vhdl.do
+-- 
+-- Description:
+-- A simle computer with a CPU, a ROM, a bus and LED and 7-segment displays to show the state of the CPU 
+-- 
+-- In_signals:
+-- Clock_50   -- 50 MHz system clock
+-- Man_clk_n  -- switch to manual clock pulse
+-- Key_n      -- The button input when using a manual clock pulse
+-- Reset_n    -- reset switch
+-- 
+-- Out_signals:
+-- Hex0   -- 7 segment display for address
+-- Hex1   -- 7 segment display for Program counter
+-- Hex2   -- 7 segment display for Instruction register
+-- Hex3   -- 7 segment display for CPU state
+--
+-- Validated with "ModelSim - Altera" and verified 10M50DAF484C7G  board
+library ieee;
+use ieee.numeric_std.all;
+use ieee.std_logic_1164.all;

@@ -1,0 +1,306 @@
+m255
+K4
+z2
+!s11e vcom 2020.1 2020.02, Feb 28 2020
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 dC:/vhdl_git/digital_clock/simulation/modelsim
+Ebcd_splitter
+Z1 w1762172284
+Z2 DPx4 ieee 14 std_logic_1164 0 22 cVAk:aDinOX8^VGI1ekP<3
+Z3 DPx3 std 6 textio 0 22 zE1`LPoLg^DX3Oz^4Fj1K3
+Z4 DPx4 ieee 11 numeric_std 0 22 aU^R8eGcicLcUFIaBQSL>3
+!i122 5
+R0
+Z5 8C:/vhdl_git/digital_clock/bcd_splitter.vhd
+Z6 FC:/vhdl_git/digital_clock/bcd_splitter.vhd
+l0
+L41 1
+VbBCc`h;nIR2aGNEM6a@W90
+!s100 h=Z1C=9V@Z2<YajdVLKgI3
+Z7 OV;C;2020.1;71
+31
+Z8 !s110 1763315465
+!i10b 1
+Z9 !s108 1763315465.000000
+Z10 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/bcd_splitter.vhd|
+Z11 !s107 C:/vhdl_git/digital_clock/bcd_splitter.vhd|
+!i113 1
+Z12 o-93 -work work
+Z13 tExplicit 1 CvgOpt 0
+Atls
+R2
+R3
+R4
+DEx4 work 12 bcd_splitter 0 22 bBCc`h;nIR2aGNEM6a@W90
+!i122 5
+l60
+L58 15
+V:BTFAgP`_VB24@e8_a9ZG1
+!s100 bCCm=n^8;ZBdbU:a>_3[30
+R7
+31
+R8
+!i10b 1
+R9
+R10
+R11
+!i113 1
+R12
+R13
+Eclock_divider
+Z14 w1763311773
+R4
+R3
+R2
+!i122 2
+R0
+Z15 8C:/vhdl_git/digital_clock/clock_divider.vhd
+Z16 FC:/vhdl_git/digital_clock/clock_divider.vhd
+l0
+L37 1
+VSWdcFi^O3OEa51A]T4JgX2
+!s100 00]fiCeQYHMAAPZH@z`z02
+R7
+31
+R8
+!i10b 1
+R9
+Z17 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/clock_divider.vhd|
+Z18 !s107 C:/vhdl_git/digital_clock/clock_divider.vhd|
+!i113 1
+R12
+R13
+Atls
+R4
+R3
+R2
+DEx4 work 13 clock_divider 0 22 SWdcFi^O3OEa51A]T4JgX2
+!i122 2
+l52
+L45 52
+ViRO[QQ4abd7;TgeFUXU0>3
+!s100 `7zfIRD>eigJR>5[09G392
+R7
+31
+R8
+!i10b 1
+R9
+R17
+R18
+!i113 1
+R12
+R13
+Esju_seg_displayer
+Z19 w1761917221
+R3
+R2
+!i122 0
+R0
+Z20 8C:/vhdl_git/digital_clock/SJU_SEG_DISPLAYER.vhd
+Z21 FC:/vhdl_git/digital_clock/SJU_SEG_DISPLAYER.vhd
+l0
+L24 1
+V50z<ao9bdc;Nj1S;[HU:>1
+!s100 P84N8T`n6PWG9fTaz1fn91
+R7
+31
+R8
+!i10b 1
+R9
+Z22 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/SJU_SEG_DISPLAYER.vhd|
+Z23 !s107 C:/vhdl_git/digital_clock/SJU_SEG_DISPLAYER.vhd|
+!i113 1
+R12
+R13
+Asju_seg_displayer_arch
+R3
+R2
+DEx4 work 17 sju_seg_displayer 0 22 50z<ao9bdc;Nj1S;[HU:>1
+!i122 0
+l55
+L30 40
+V_9dmg5`:ion7zicF>GBkg3
+!s100 Pm<Yc=cOW=1d=`l^j72eZ3
+R7
+31
+R8
+!i10b 1
+R9
+R22
+R23
+!i113 1
+R12
+R13
+Estatus_display_system
+Z24 w1762154759
+R3
+R2
+!i122 1
+R0
+Z25 8C:/vhdl_git/digital_clock/status_display_system.vhd
+Z26 FC:/vhdl_git/digital_clock/status_display_system.vhd
+l0
+L25 1
+V]YQ=a1c@<MH;:2bjL9WRc1
+!s100 eRYiO1nZ2UCm1ZB6di?<F2
+R7
+31
+R8
+!i10b 1
+R9
+Z27 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/status_display_system.vhd|
+Z28 !s107 C:/vhdl_git/digital_clock/status_display_system.vhd|
+!i113 1
+R12
+R13
+Abdf_type
+R3
+R2
+DEx4 work 21 status_display_system 0 22 ]YQ=a1c@<MH;:2bjL9WRc1
+!i122 1
+l53
+L45 45
+VLdh<j]V>o8`XDk7ZBhW2R0
+!s100 ZnSDFTCUXYzFVmR^?HOl[0
+R7
+31
+R8
+!i10b 1
+R9
+R27
+R28
+!i113 1
+R12
+R13
+Etimer_counter
+Z29 w1762153087
+R2
+R3
+R4
+!i122 4
+R0
+Z30 8C:/vhdl_git/digital_clock/timer_counter.vhd
+Z31 FC:/vhdl_git/digital_clock/timer_counter.vhd
+l0
+L35 1
+VYT3Zgc=:Po7dP@9IJ`2Vj2
+!s100 A]Mf@Lo0DS_M2Njm1z=3n3
+R7
+31
+R8
+!i10b 1
+R9
+Z32 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/timer_counter.vhd|
+Z33 !s107 C:/vhdl_git/digital_clock/timer_counter.vhd|
+!i113 1
+R12
+R13
+Artl
+R2
+R3
+R4
+DEx4 work 13 timer_counter 0 22 YT3Zgc=:Po7dP@9IJ`2Vj2
+!i122 4
+l52
+L47 39
+VIDHPh8JJXO2SMWc^7LO7J2
+!s100 c>IRXVHRCJT?Y0A10;=n11
+R7
+31
+R8
+!i10b 1
+R9
+R32
+R33
+!i113 1
+R12
+R13
+Etimer_top_level
+Z34 w1762155193
+R4
+R3
+R2
+!i122 3
+R0
+Z35 8C:/vhdl_git/digital_clock/timer_top_level.vhd
+Z36 FC:/vhdl_git/digital_clock/timer_top_level.vhd
+l0
+L39 1
+ViO<z`Qj`gf5B<@R[g1l`g3
+!s100 f9X;_F;acjN=91]=CPZ?[3
+R7
+31
+R8
+!i10b 1
+R9
+Z37 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/timer_top_level.vhd|
+Z38 !s107 C:/vhdl_git/digital_clock/timer_top_level.vhd|
+!i113 1
+R12
+R13
+Atls
+R4
+R3
+R2
+DEx4 work 15 timer_top_level 0 22 iO<z`Qj`gf5B<@R[g1l`g3
+!i122 3
+l136
+L53 159
+ViDb1G[?9nNkHk>eBN?JUH0
+!s100 J0HzQFNjJRUk=F[;ObUJ^3
+R7
+31
+R8
+!i10b 1
+R9
+R37
+R38
+!i113 1
+R12
+R13
+Etimer_top_level_vhd_tst
+Z39 w1762095466
+R3
+R2
+!i122 6
+R0
+Z40 8C:/vhdl_git/digital_clock/simulation/modelsim/timer_top_level.vht
+Z41 FC:/vhdl_git/digital_clock/simulation/modelsim/timer_top_level.vht
+l0
+L31 1
+VQOCBF?6R?4PiC90i?9DC03
+!s100 <FPz3il]YoHiVi7UGU8a_0
+R7
+31
+Z42 !s110 1763315466
+!i10b 1
+R9
+Z43 !s90 -reportprogress|300|-93|-work|work|C:/vhdl_git/digital_clock/simulation/modelsim/timer_top_level.vht|
+!s107 C:/vhdl_git/digital_clock/simulation/modelsim/timer_top_level.vht|
+!i113 1
+R12
+R13
+Atimer_top_level_arch
+R3
+R2
+DEx4 work 23 timer_top_level_vhd_tst 0 22 QOCBF?6R?4PiC90i?9DC03
+!i122 6
+l57
+L33 52
+VSUGcZJk8]eVHMJ:nNbLNc3
+!s100 RoH;Mo^QiV28JCgT72X>l3
+R7
+31
+R42
+!i10b 1
+R9
+R43
+Z44 !s107 C:/vhdl_git/digital_clock/simulation/modelsim/timer_top_level.vht|
+!i113 1
+R12
+R13

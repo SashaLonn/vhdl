@@ -1,0 +1,84 @@
+-- Copyright (C) 2023  Intel Corporation. All rights reserved.
+-- Your use of Intel Corporation's design tools, logic functions 
+-- and other software and tools, and any partner logic 
+-- functions, and any output files from any of the foregoing 
+-- (including device programming or simulation files), and any 
+-- associated documentation or information are expressly subject 
+-- to the terms and conditions of the Intel Program License 
+-- Subscription Agreement, the Intel Quartus Prime License Agreement,
+-- the Intel FPGA IP License Agreement, or other applicable license
+-- agreement, including, without limitation, that your use is for
+-- the sole purpose of programming logic devices manufactured by
+-- Intel and sold by Intel or its authorized distributors.  Please
+-- refer to the applicable agreement for further details, at
+-- https://fpgasoftware.intel.com/eula.
+
+-- ***************************************************************************
+-- This file contains a Vhdl test bench template that is freely editable to   
+-- suit user's needs .Comments are provided in each section to help the user  
+-- fill out necessary details.                                                
+-- ***************************************************************************
+-- Generated on "10/30/2025 17:14:37"
+                                                            
+-- Vhdl Test Bench template for design  :  timer_top_level
+-- 
+-- Simulation tool : ModelSim (VHDL)
+-- 
+
+LIBRARY ieee;                                               
+USE ieee.std_logic_1164.all;                                
+
+ENTITY timer_top_level_vhd_tst IS
+END timer_top_level_vhd_tst;
+ARCHITECTURE timer_top_level_arch OF timer_top_level_vhd_tst IS
+-- constants                                                 
+-- signals                                                   
+SIGNAL clock_50 : STD_LOGIC;
+SIGNAL HEX0 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL HEX1 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL HEX2 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL HEX3 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL HEX4 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL HEX5 : STD_LOGIC_VECTOR(6 DOWNTO 0);
+SIGNAL reset_n : STD_LOGIC;
+CONSTANT clock_period :TIME :=20 ns;
+COMPONENT timer_top_level
+   PORT (
+   clock_50 : IN STD_LOGIC;
+   HEX0 : out STD_LOGIC_VECTOR(6 DOWNTO 0);
+   HEX1 : out STD_LOGIC_VECTOR(6 DOWNTO 0);
+   HEX2 : out STD_LOGIC_VECTOR(6 DOWNTO 0);
+   HEX3 : out STD_LOGIC_VECTOR(6 DOWNTO 0);
+   HEX4 : out STD_LOGIC_VECTOR(6 DOWNTO 0);
+   HEX5 : out STD_LOGIC_VECTOR(6 DOWNTO 0);
+   reset_n : IN STD_LOGIC
+   );
+END COMPONENT;
+BEGIN
+   i1 : timer_top_level
+   PORT MAP (
+-- list connections between master ports and signals
+   clock_50 => clock_50,
+   HEX0 => HEX0,
+   HEX1 => HEX1,
+   HEX2 => HEX2,
+   HEX3 => HEX3,
+   HEX4 => HEX4,
+   HEX5 => HEX5,
+   reset_n => reset_n
+   );
+clock : PROCESS
+   begin
+    clock_50 <= '0';
+    WAIT FOR clock_period / 2;
+    clock_50 <= '1';
+    WAIT FOR clock_period /2;
+   end process;
+reset_p :PROCESS
+   begin
+    reset_n <= '0';
+    WAIt FOR 5 *clock_period;
+    reset_n <= '1';
+    WAIT;
+    end process;                                        
+END timer_top_level_arch;

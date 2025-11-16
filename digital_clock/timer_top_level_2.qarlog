@@ -1,0 +1,21 @@
+Quartus Prime Archive log --	C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/timer_top_level_2.qarlog
+
+Archive:	C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/timer_top_level_2.qar
+Date:		Mon Nov  3 08:35:46 2025
+Quartus Prime		22.1std.2 Build 922 07/20/2023 SC Lite Edition
+
+	=========== Files Selected: ===========
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/SJU_SEG_DISPLAYER.vhd
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/bcd_splitter.vhd
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/clock_divider.vhd
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/simulation/modelsim/timer_top_level.vht
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/status_display_system.vhd
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/timer_counter.vhd
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/timer_top_level.qpf
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/timer_top_level.qsf
+C:/AGSTU_Skola_filstruktur/AGSTU/Kurs_VHDL_1/VHDL_Individuell_uppgift/timer_project/timer_top_level.vhd
+c:/intelfpga_lite/22.1std/quartus/bin64/assignment_defaults.qdf
+	======= Total: 10 files to archive =======
+
+	================ Status: ===============
+All files archived successfully.
