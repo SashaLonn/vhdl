@@ -1,0 +1,250 @@
+library ieee;
+use ieee.std_logic_1164.all;
+use ieee.numeric_std.all;
+
+entity ssi_slave is 
+port(
+    clk                          :in  std_logic;
+    reset_n                      :in  std_logic;
+    ssi_clk_dir                  :out std_logic;
+    ssi_clk                      :in  std_logic;
+    ssi_charge_dir               :out std_logic;
+    ssi_charge_pulse             :in  std_logic;
+    ssi_data                     :out std_logic;
+    disable_Linedriver           :out std_logic;
+    ssi2_mode                    :in  std_logic
+   -- position                     :in  std_logic_vector(13 downto 0)
+
+);
+end ssi_slave;
+
+architecture rtl of ssi_slave is
+  constant POSITION_DATA_WIDTH_MAX       :integer   := 14;
+  constant SSI_CLK_DIRECTION             :std_logic := '0';
+  constant SSI_DISABLE_LINEDRIVER        :std_logic := '1';
+  constant SSI_CHARGE_DIRECTION          :std_logic := '0';
+  constant POS_NR_TO_TXD                 :integer   := 16; 
+  constant PARITY_TO_TXD                 :integer   := 15; 
+  
+  -- sync signals
+  signal ssi_clk_sync_1                  :std_logic;
+  signal ssi_clk_sync_2                  :std_logic;
+  signal ssi_clk_sync_3                  :std_logic;
+  signal ssi_charge_pulse_sync_1         :std_logic;
+  signal ssi_charge_pulse_sync_2         :std_logic;
+  signal ssi_charge_pulse_sync_3         :std_logic;
+
+  -- transmit signals
+  signal transfer_bit_nr_ssi2           :integer range 0 to POS_NR_TO_TXD;
+  signal transmit_register_ssi2         :unsigned(POSITION_DATA_WIDTH_MAX downto 0)      := (others  => '0');
+  signal pos_max                        :unsigned(POSITION_DATA_WIDTH_MAX - 1 downto 0)  := (others  => '0');
+  signal position_value_i               :unsigned(POSITION_DATA_WIDTH_MAX - 1  downto 0) := (others  => '0');
+  signal transmission_running_ssi2      :std_logic;
+  
+ 
+  signal ssi_data_i                     :std_logic := '0'; 
+  signal ssi2_data_i                    :std_logic := '0'; 
+  signal eval_parity                    :std_logic;
+  signal parity                         :std_logic;
+  signal ssi_CCW                        :std_logic := '0';
+  signal gray_code                      :std_logic := '0';
+
+
+ -----------------------------------------------------------------------------
+  -- System Constants, during testing
+  -----------------------------------------------------------------------------
+  constant CLOCK_FREQ_HZ                :integer := 100000000;   -- Hz
+  constant CLOCK_FREQ_MHZ               :integer := 100; -- MHz
+  constant NR_CLOCKS_PER_01_USEC        :integer := 10;
+  constant NR_CLOCKS_PER_1_USEC         :integer := 10 * NR_CLOCKS_PER_01_USEC;
+  constant NR_CLOCKS_PER_10_USEC        :integer := 10 * NR_CLOCKS_PER_1_USEC;
+  constant NR_CLOCKS_PER_100_USEC       :integer := 10 * NR_CLOCKS_PER_10_USEC;
+  constant NR_CLOCKS_PER_1_MS           :integer := 10 * NR_CLOCKS_PER_100_USEC;
+  constant NR_CLOCKS_PER_10_MS          :integer := 10 * NR_CLOCKS_PER_1_MS;
+  constant NR_CLOCKS_PER_100_MS         :integer := 10 * NR_CLOCKS_PER_10_MS;
+  constant NR_CLOCKS_PER_1_S            :integer := 10 * NR_CLOCKS_PER_100_MS;
+  
+
+  -- transmit signals
+  signal transfer_bit_nr                :integer range 0 to POSITION_DATA_WIDTH_MAX:= 14;
+  signal transmit_register              :unsigned(POSITION_DATA_WIDTH_MAX downto 0)      := (others  => '0');
+  signal transmission_running           :std_logic;
+  signal previous_bit                   :std_logic;
+
+  -- timer signals
+  constant tm_timer_count               :integer := 12 * NR_CLOCKS_PER_1_USEC - 1;
+  signal tm_timer_counter               :integer range 0 to tm_timer_count;
+  
+
+begin
+
+  ssi_charge_dir              <= SSI_CHARGE_DIRECTION;
+  ssi_clk_dir                 <= SSI_CLK_DIRECTION;   
+  disable_Linedriver          <= SSI_DISABLE_LINEDRIVER;
+  ssi_data                    <= ssi2_data_i when ssi2_mode = '1' else ssi_data_i;
+  pos_max                     <= "11111111111111";
+  ssi_CCW                     <= '1';
+  position_value_i            <= "01010101110011";
+  
+
+   
+
+
+ssi_transmit_proc:process(reset_n, clk)
+  variable start_transmission       :std_logic;
+  variable shift_transmit_register  :std_logic;
+
+begin
+  if reset_n = '0' then
+    start_transmission      := '0';
+    ssi_data_i              <= '1';
+    shift_transmit_register := '0';
+    previous_bit            <= '0';
+   
+  elsif clk'event and clk = '1' then
+    start_transmission      := '0'; 
+
+    shift_transmit_register := '0';
+
+    
+    if ssi_clk_sync_2 = '0' and ssi_clk_sync_3 = '1' then-- on falling edge of ssi2_mode
+      transmission_running                                <= '1';
+      transfer_bit_nr <=14;
+        if ssi_CCW = '0' then -- if CW 0
+          transmit_register(POSITION_DATA_WIDTH_MAX downto 1) <= position_value_i;
+        else
+          transmit_register(POSITION_DATA_WIDTH_MAX downto 1) <= pos_max - position_value_i;
+        end if;
+    end if;   
+    
+    
+    -- transmission
+    if transmission_running = '1' then
+      if transfer_bit_nr > 1 then
+        shift_transmit_register := '1';
+      elsif ssi_clk_sync_2 = '1' and ssi_clk_sync_3 = '0' then
+        if transfer_bit_nr = 1 then
+          ssi_data_i <= '0';
+          transmission_running <= '0';
+        else
+          if gray_code = '0'  then
+            ssi_data_i <= transmit_register(POSITION_DATA_WIDTH_MAX - 1);
+          else
+            ssi_data_i <= previous_bit xor transmit_register(POSITION_DATA_WIDTH_MAX - 1);
+          end if;
+          previous_bit <= transmit_register(POSITION_DATA_WIDTH_MAX - 1);
+          shift_transmit_register := '1';
+        end if;
+      end if;
+    end if;
+    
+    
+    if shift_transmit_register = '1' then
+      transfer_bit_nr <= transfer_bit_nr - 1;
+      transmit_register(POSITION_DATA_WIDTH_MAX - 1 downto 1) <= transmit_register(POSITION_DATA_WIDTH_MAX - 2 downto 0);
+    end if;
+    -- end transmission;
+    
+    if ssi_clk = '1' then
+      if tm_timer_counter = tm_timer_count then
+        ssi_data_i <= '1';
+      else
+        tm_timer_counter <= tm_timer_counter + 1;
+      end if;
+    else
+      tm_timer_counter <= 0;
+    end if;
+    
+  end if;
+end process;
+
+
+
+ssi2_transmit_proc:process(reset_n, clk)
+begin
+  if reset_n = '0' then
+    transmission_running_ssi2    <= '0';
+    ssi2_data_i                <= '0';
+    transmit_register_ssi2       <= (others => '0');
+    parity                       <= '0';
+    eval_parity                  <= '0';
+    transfer_bit_nr_ssi2         <=  0;
+  elsif clk'event and clk = '1' then
+    eval_parity             <= '0';
+    if ssi_charge_pulse_sync_2 = '0' and ssi_charge_pulse_sync_3 = '1' then  
+      transmit_register_ssi2(0)                           <= '1';
+      transmission_running_ssi2                           <= '1';
+      parity                                              <= '0';
+        if ssi_CCW = '0' then -- if CW 0
+          transmit_register_ssi2(POSITION_DATA_WIDTH_MAX downto 1) <= position_value_i;
+        else
+          transmit_register_ssi2(POSITION_DATA_WIDTH_MAX downto 1) <= pos_max - position_value_i;
+        end if;
+    end if;   
+    
+    -- transmission
+    if transmission_running_ssi2 = '1' then    
+      if ssi_clk_sync_2 = '1' and ssi_clk_sync_3 = '0' then
+        if transfer_bit_nr_ssi2 = POS_NR_TO_TXD then
+          ssi2_data_i                           <='0';
+          transmission_running_ssi2             <='0';
+          transfer_bit_nr_ssi2                  <= 0;
+        else
+          if transfer_bit_nr_ssi2 = PARITY_TO_TXD  then 
+            ssi2_data_i      <= not parity;
+          else     
+            ssi2_data_i     <= transmit_register_ssi2(0);
+          end if;
+          eval_parity                                                 <= '1';  
+          transfer_bit_nr_ssi2                                        <= transfer_bit_nr_ssi2 + 1;
+          transmit_register_ssi2(POSITION_DATA_WIDTH_MAX -1 downto 0) <= transmit_register_ssi2(POSITION_DATA_WIDTH_MAX downto 1);   
+        end if;
+      end if;
+    end if;  
+    -- end transmission 
+    
+    if eval_parity  = '1' then  
+      parity      <= parity xor ssi2_data_i;
+      eval_parity <= '0';
+    end if;   
+  end if;
+end process;
+
+
+
+sync_input_proc:process(reset_n, clk)
+begin
+  if reset_n = '0' then
+    ssi_clk_sync_1                  <= '0';
+    ssi_clk_sync_2                  <= '0';
+    ssi_clk_sync_3                  <= '0';
+    ssi_charge_pulse_sync_1         <= '0';
+    ssi_charge_pulse_sync_2         <= '0';
+    ssi_charge_pulse_sync_3         <= '0';
+    
+  elsif clk'event and clk = '1' then
+    ssi_clk_sync_1            <= ssi_clk;
+    ssi_clk_sync_2            <= ssi_clk_sync_1;
+    ssi_clk_sync_3            <= ssi_clk_sync_2;
+--    ssi2_mode_1               <= ssi2_mode;
+--    ssi2_mode_2               <= ssi2_mode_1;
+--    ssi2_mode_3               <= ssi2_mode_2;
+    ssi_charge_pulse_sync_1   <= ssi_charge_pulse;
+    ssi_charge_pulse_sync_2   <= ssi_charge_pulse_sync_1;
+    ssi_charge_pulse_sync_3   <= ssi_charge_pulse_sync_2;
+  end if;
+end process;
+
+
+
+  
+end architecture;
+
+
+
+--set_location_assignment PIN_E1 -to clk
+--set_location_assignment PIN_N2 -to ssi_charge_pulse
+--set_location_assignment PIN_P2 -to ssi_clk
+--set_location_assignment PIN_N1 -to ssi_charge_dir
+--set_location_assignment PIN_P3 -to ssi_clk_dir
+--set_location_assignment PIN_T12 -to ssi_data

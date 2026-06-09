@@ -1,0 +1,16 @@
+-------------------------------------------------------------------------------
+-- Title       : EnDat to incremental and SSI 600 Package File
+-------------------------------------------------------------------------------
+-- File        : endat_to_inc_ssi_600_pkg.vhd
+-- Author      : Robin Johansson (r.joahnsson@leinelinde.se)
+-- Created     : 2019-11-11
+-------------------------------------------------------------------------------
+-- Description : Package file EnDat to incremental and SSI 600
+-------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.std_logic_1164.all;
+use IEEE.numeric_std.all;
+use IEEE.std_logic_arith.all;
+
+package ssi_pkg is
