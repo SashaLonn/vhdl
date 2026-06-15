@@ -14,7 +14,7 @@ port (
     ssi_clk_dir               :out std_logic;
     ssi2_charge_signal        :out std_logic; -- extra signal for SSI 2 
     ssi2_charge_signal_dir    :out std_logic; -- extra signal for SSI 2
-    ssi2_mode                    :in  std_logic
+    ssi2_mode                 :in  std_logic
 );
 end ssi_master;
 
@@ -28,10 +28,9 @@ architecture rtl of ssi_master is
   signal charge_signal_i             :std_logic;
   signal ssi2_charge_pulse_counter_l :integer range 0 to 20;
   signal ssi2_charge_pulse_counter_h :integer range 0 to 5;
-  signal ssi2_clk_hp_counter         :integer range 0 to SSI_CLK_HP_COUNT_MAX;
+  signal ssi2_clk_hp_counter         :integer range 0 to 49999;
   
-  signal ssi2_clk_hp_counter_extra   :integer range 0 to SSI_CLK_HP_COUNT_MAX;
-  signal ssi2_clk_hp_count           :integer range 0 to SSI_CLK_HP_COUNT_MAX;
+  signal ssi2_clk_hp_count           :integer range 0 to 49999;
   signal ssi2_bit_counter            :integer range 0 to 2**POS_NR_BIT_WIDTH - 1;
   signal ssi2_bit_count              :integer range 0 to 2**POS_NR_BIT_WIDTH - 1;
   signal ssi2_position               :std_logic_vector(16 - 1 downto 0);
@@ -72,6 +71,7 @@ begin
     ssi_clk_i     <= '1';
     timer_counter <= 0;
   elsif clk 'event and clk = '1' then
+  
     if timer_counter < tm_timer_count then
         ssi_clk_i <= not ssi_clk_i;
       else
