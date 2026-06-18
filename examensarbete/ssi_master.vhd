@@ -1,6 +1,7 @@
 library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
+use work.ssi_pkg.all;
 
 entity ssi_master is 
 port (
@@ -10,10 +11,7 @@ port (
     txd                       :out std_logic;
     ssi_clk                   :out std_logic;
     ssi_data                  :in  std_logic;
-    ssi_data_dir              :out std_logic;
-    ssi_clk_dir               :out std_logic;
     ssi2_charge_signal        :out std_logic; -- extra signal for SSI 2 
-    ssi2_charge_signal_dir    :out std_logic; -- extra signal for SSI 2
     ssi2_mode                 :in  std_logic
 );
 end ssi_master;
@@ -21,6 +19,14 @@ end ssi_master;
 architecture rtl of ssi_master is
 
   signal ssi_clk_i                   :std_logic;
+  --ssi signals
+  signal ssi_clk_hp_counter         :integer range 0 to 49999;  
+  signal ssi_clk_hp_count           :integer range 0 to 49999;
+  signal ssi_bit_counter            :integer range 0 to 13;
+  signal ssi_bit_count              :integer range 0 to 13; 
+  signal run_ssi_clk_counter        :std_logic;
+  signal run_pt_counter             :std_logic;
+  signal ssi_position              :std_logic_vector(14 - 1 downto 0);
    
   --ssi2 signals 
   signal ssi2_clk_i                  :std_logic;
@@ -28,11 +34,10 @@ architecture rtl of ssi_master is
   signal charge_signal_i             :std_logic;
   signal ssi2_charge_pulse_counter_l :integer range 0 to 20;
   signal ssi2_charge_pulse_counter_h :integer range 0 to 5;
-  signal ssi2_clk_hp_counter         :integer range 0 to 49999;
-  
+  signal ssi2_clk_hp_counter         :integer range 0 to 49999;  
   signal ssi2_clk_hp_count           :integer range 0 to 49999;
-  signal ssi2_bit_counter            :integer range 0 to 2**POS_NR_BIT_WIDTH - 1;
-  signal ssi2_bit_count              :integer range 0 to 2**POS_NR_BIT_WIDTH - 1;
+  signal ssi2_bit_counter            :integer range 0 to 13;
+  signal ssi2_bit_count              :integer range 0 to 13;
   signal ssi2_position               :std_logic_vector(16 - 1 downto 0);
   --signal ssi2_position               :std_logic_vector(POS_BYTE_WIDTH * 8 - 1 downto 0);
 
@@ -43,9 +48,9 @@ architecture rtl of ssi_master is
   
   --signal position_ssi2                :std_logic_vector(POS_BYTE_WIDTH * 8 - 1 downto 0);
   signal position_ssi2                :std_logic_vector(16 - 1 downto 0);
-  signal position_ssi2_read           :std_logic_vector(POS_BYTE_WIDTH * 8 - 1 downto 0);
-  signal position_ssi2_parity_r      :std_logic_vector(POS_BYTE_WIDTH * 8 - 1 downto 0);
-  signal nr_pos_bytes_ssi2            :integer range 0 to POS_BYTE_WIDTH;
+  signal position_ssi2_read           :std_logic_vector(14 - 1 downto 0);
+  signal position_ssi2_parity_r       :std_logic_vector(14- 1 downto 0);
+  signal nr_pos_bytes_ssi2            :integer range 0 to 13;
   signal ssi2_first_reading           :std_logic;
   signal ssi2_pos_ready               :std_logic;
   signal parity                       :std_logic := '0';
@@ -59,29 +64,55 @@ architecture rtl of ssi_master is
   type ssi2_state_type                 is (IDLE,RECEIVING,STORE_DATA);
   signal ssi2_state                    :ssi2_state_type;
 begin
-  ssi_clk_dir             <= '1';
-  ssi_data_dir            <= '0'; 
-  ssi2_charge_signal_dir  <= '1';
-  ssi_slk <= ssi2_clk_i when ssi2_mode = '1' else ssi_clk_i;
+
+  ssi_clk <= ssi2_clk_i when ssi2_mode = '1' else ssi_clk_i;
   
   
-  ssi_proc: process 
-  begin
+ssi_proc: process(reset_n, clk) 
+begin
   if reset_n = '0' then 
-    ssi_clk_i     <= '1';
-    timer_counter <= 0;
+    ssi_clk_i           <= '1';
+    ssi_clk_hp_counter  <= 0;
+    run_ssi_clk_counter <= '1';
+    run_pt_counter      <= '0';
+    ssi_bit_counter     <= 0;
+    
   elsif clk 'event and clk = '1' then
   
-    if timer_counter < tm_timer_count then
+    if run_ssi_clk_counter = '1' then  
+      if ssi_clk_hp_counter = ssi_clk_hp_count then
+        ssi_clk_hp_count <= 0;
         ssi_clk_i <= not ssi_clk_i;
-      else
-        timer_counter <= tm_timer_counter + 1;
-      end if;
+        if ssi_clk_i = '0' then
+          if ssi_bit_counter < ssi_bit_count  then
+            ssi_position(0)              <= ssi_data;
+            ssi_position(14 - 1 downto 1)  <= ssi_position(14- 2 downto 0);
+            ssi_bit_counter                <= ssi_bit_counter + 1;            
+            if ssi_bit_counter = ssi_bit_count  then
+              ssi_bit_counter  <= 0;
+              run_ssi_clk_counter <= '0';
+              run_pt_counter      <= '1';
+            end if;
+          end if;
+        end if;
+      end if;  
     else
-      timer_counter <= 0;
-    end if;    
+      ssi_clk_hp_counter <= ssi_clk_hp_count + 1;
+    end if;
+      
+    
+    if run_pt_counter = '1' then
+      if pt_counter >= pt_count then
+        run_pt_counter  <= '0';
+        pt_counter      <= 0;
+      else
+        pt_counter      <= pt_counter + 1;
+      end if;
+    end if;
+    
+  
   end if;
-  end process;
+end process;
   
   
   ssi2_proc:process (reset_n, clk)
@@ -91,15 +122,13 @@ begin
     ssi2_clk_i_old         <= '0';
     ssi2_clk_i             <= '0';
   elsif clk'event and clk  = '1' then
-    if parameters_set = '1' then
       if ssi2_clk_hp_counter = ssi2_clk_hp_count then
         ssi2_clk_hp_counter  <= 0;
         ssi2_clk_i           <= not ssi2_clk_i; 
       else 
         ssi2_clk_hp_counter  <= ssi2_clk_hp_counter + 1;
         ssi2_clk_i_old       <= ssi2_clk_i;      
-      end if;
-    end if;   
+      end if;  
   end if;
 end process;
 
@@ -156,7 +185,7 @@ begin
   elsif clk' event and clk   = '1' then
     new_position_ssi2 <= '0';    
     if eval_parity  = '1' then  
-      parity       <= parity xor ssi_data_s;
+      parity       <= parity xor ssi_data;
       parity_check <= not parity;
       eval_parity  <= '0';
     end if;
@@ -173,7 +202,7 @@ begin
       when RECEIVING =>
         if  ssi2_clk_i_old = '1'and ssi2_clk_i = '0' then
           if ssi2_bit_counter < ssi2_bit_count  then
-            ssi2_position(15)              <= ssi_data_s;
+            ssi2_position(15)              <= ssi_data;
             ssi2_position(16 - 2 downto 0) <= ssi2_position(16- 1 downto 1);
             ssi2_bit_counter               <= ssi2_bit_counter + 1;
             eval_parity                    <= '1';

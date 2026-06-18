@@ -34,8 +34,8 @@ package ssi_pkg is
   signal tm_timer_counter               :integer range 0 to tm_timer_count;
   
   -- timer signals master
-  constant timer_count               :integer := 12 * NR_CLOCKS_PER_1_USEC - 1;
-  signal timer_counter               :integer range 0 to tm_timer_count;
+  constant pt_count                  :integer := 25 * NR_CLOCKS_PER_1_USEC - 1;
+  signal   pt_counter                 :integer range 0 to pt_count;
   
   
 end ssi_pkg;
