@@ -29,18 +29,17 @@ This project describes the design, implementation, and verification of a serial 
 
 ## Project Structure
 
-```
+```text
 project/
 │
 ├── src/              # VHDL source files
 ├── sim/              # Testbench files
 ├── constraints/      # Timing constraints (.sdc)
-├── documents/        # Technical report(Swidish)
-├── ssi_protocol.qpf  # Quartus project file
+├── documents/        # Technical report (Swedish)
+├── ssi_top.qpf       # Quartus project file
 ├── ssi_top.qsf       # Quartus settings file
 ├── README.md
 └── .gitignore
-
 ```
 
 ---
