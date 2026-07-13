@@ -30,7 +30,6 @@ This project describes the design, implementation, and verification of a serial 
 ## Project Structure
 
 ```
-
 project/
 │
 ├── src/              # VHDL source files
